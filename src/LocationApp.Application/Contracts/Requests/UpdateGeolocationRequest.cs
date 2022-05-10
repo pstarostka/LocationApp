@@ -1,6 +1,6 @@
-﻿namespace LocationApp.Application.Contracts.Responses;
+namespace LocationApp.Application.Contracts.Requests;
 
-public class GeolocationResponse
+public class UpdateGeolocationRequest
 {
     public int Id { get; set; }
     public string Ip { get; set; } = "";

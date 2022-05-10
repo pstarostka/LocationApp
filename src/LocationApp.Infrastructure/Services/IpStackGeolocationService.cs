@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using AutoMapper;
+using LocationApp.Application.Contracts.Requests;
 using LocationApp.Application.Contracts.Responses;
 using LocationApp.Application.Interfaces;
 using LocationApp.Infrastructure.Models;
@@ -68,5 +69,15 @@ internal class IpStackGeolocationService : IGeolocationService
         var singleResponse =
             await _restClient.ExecuteAsync<GeolocationApiResponse>(request, cancellationToken: cancellationToken);
         return _mapper.Map<GeolocationResponse>(singleResponse.Data);
+    }
+
+    public Task UpdateGeolocation(UpdateGeolocationRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task RemoveGeolocation(string ipAddressOrId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 }

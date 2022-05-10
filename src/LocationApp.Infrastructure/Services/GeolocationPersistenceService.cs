@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
+using LocationApp.Application.Contracts.Requests;
 using LocationApp.Application.Contracts.Responses;
 using LocationApp.Application.Interfaces;
 using LocationApp.Domain.Entities;
@@ -65,5 +67,33 @@ internal class GeolocationPersistenceService : IGeolocationService
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<GeolocationResponse>(mappedApiResponse);
+    }
+
+    public async Task UpdateGeolocation(UpdateGeolocationRequest request, CancellationToken cancellationToken = default)
+    {
+        var entity = await _dbContext.Geolocations.Where(x => x.Id == request.Id)
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        if (entity is null)
+            throw new ApplicationException($"Entity with id '{request.Id}' was not found");
+
+        _dbContext.Entry(entity).CurrentValues.SetValues(_mapper.Map<GeolocationEntity>(request));
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task RemoveGeolocation(string ipAddressOrId, CancellationToken cancellationToken = default)
+    {
+        var isId = int.TryParse(ipAddressOrId, out var entityId);
+        Expression<Func<GeolocationEntity, bool>> predicate = isId
+            ? x => x.Id == entityId
+            : x => x.Ip == ipAddressOrId;
+
+        var entity = await _dbContext.Geolocations.Where(predicate)
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        if (entity is null)
+            throw new ApplicationException($"Entity to delete was not found");
+
+        _dbContext.Geolocations.Remove(entity);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
