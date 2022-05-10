@@ -4,6 +4,6 @@ namespace LocationApp.Application.Interfaces;
 
 public interface IGeolocationService
 {
-    public Task<IEnumerable<GeolocationResponse>> GetByIpAddresses(ICollection<string> ipAddresses);
-    public Task<GeolocationResponse> GetByMyIpAddress();
+    public Task<IEnumerable<GeolocationResponse>> GetByIpAddresses(ICollection<string> ipAddresses, CancellationToken cancellationToken = default);
+    public Task<GeolocationResponse> GetByCurrentIpAddress(CancellationToken cancellationToken = default);
 }

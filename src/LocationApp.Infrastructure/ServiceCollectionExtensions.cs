@@ -19,7 +19,6 @@ public static class ServiceCollectionExtensions
         services.Decorate<IGeolocationService, GeolocationPersistenceService>();
         services.AddDbContext<InMemoryDbContext>();
 
-
         var dbContext = services.BuildServiceProvider().GetRequiredService<InMemoryDbContext>();
         dbContext.Database.EnsureCreated();
         InMemoryDbContextSeed.SeedData(dbContext);

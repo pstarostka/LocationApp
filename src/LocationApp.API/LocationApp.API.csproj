@@ -8,18 +8,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FastEndpoints" Version="4.1.0"/>
-        <PackageReference Include="FastEndpoints.Swagger" Version="4.1.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
+        <PackageReference Include="FastEndpoints" Version="4.1.0" />
+        <PackageReference Include="FastEndpoints.Swagger" Version="4.1.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\LocationApp.Application\LocationApp.Application.csproj"/>
-        <ProjectReference Include="..\LocationApp.Infrastructure\LocationApp.Infrastructure.csproj"/>
+        <ProjectReference Include="..\LocationApp.Application\LocationApp.Application.csproj" />
+        <ProjectReference Include="..\LocationApp.Infrastructure\LocationApp.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="WeatherForecast.cs"/>
+        <Compile Remove="WeatherForecast.cs" />
     </ItemGroup>
 
 </Project>

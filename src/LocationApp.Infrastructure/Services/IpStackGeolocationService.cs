@@ -23,7 +23,8 @@ internal class IpStackGeolocationService : IGeolocationService
     }
 
 
-    public async Task<IEnumerable<GeolocationResponse>> GetByIpAddresses(ICollection<string> ipAddresses)
+    public async Task<IEnumerable<GeolocationResponse>> GetByIpAddresses(ICollection<string> ipAddresses,
+        CancellationToken cancellationToken = default)
     {
         var request = new RestRequest("{ipAddresses}")
             .AddUrlSegment("ipAddresses", string.Join(",", ipAddresses))
@@ -31,7 +32,9 @@ internal class IpStackGeolocationService : IGeolocationService
 
         if (ipAddresses.Count > 1)
         {
-            var bulkResponse = await _restClient.ExecuteAsync<IEnumerable<GeolocationApiResponse>>(request);
+            var bulkResponse =
+                await _restClient.ExecuteAsync<IEnumerable<GeolocationApiResponse>>(request,
+                    cancellationToken: cancellationToken);
 
             if (!bulkResponse.IsSuccessful)
                 throw new InvalidDataException(bulkResponse.ErrorMessage);
@@ -49,19 +52,21 @@ internal class IpStackGeolocationService : IGeolocationService
             return _mapper.Map<IEnumerable<GeolocationResponse>>(bulkResponse.Data);
         }
 
-        var singleResponse = await _restClient.ExecuteAsync<GeolocationApiResponse>(request);
+        var singleResponse =
+            await _restClient.ExecuteAsync<GeolocationApiResponse>(request, cancellationToken: cancellationToken);
         if (!singleResponse.IsSuccessful)
             throw new InvalidDataException(singleResponse.ErrorMessage);
 
         return _mapper.Map<IEnumerable<GeolocationResponse>>(new[] {singleResponse.Data});
     }
 
-    public async Task<GeolocationResponse> GetByMyIpAddress()
+    public async Task<GeolocationResponse> GetByCurrentIpAddress(CancellationToken cancellationToken = default)
     {
         var request = new RestRequest("check")
             .AddQueryParameter("access_key", _apiKey);
 
-        var singleResponse = await _restClient.ExecuteAsync<GeolocationApiResponse>(request);
+        var singleResponse =
+            await _restClient.ExecuteAsync<GeolocationApiResponse>(request, cancellationToken: cancellationToken);
         return _mapper.Map<GeolocationResponse>(singleResponse.Data);
     }
 }

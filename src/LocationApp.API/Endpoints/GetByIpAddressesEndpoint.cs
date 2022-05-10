@@ -25,7 +25,7 @@ public class GetByIpAddressesEndpoint : Endpoint<GeolocationByIpAddressesRequest
     {
         var ipAddresses = req.IpAddresses.Split(",");
 
-        var response = await _geolocationService.GetByIpAddresses(ipAddresses);
-        await SendAsync(response.ToList());
+        var response = await _geolocationService.GetByIpAddresses(ipAddresses, ct);
+        await SendAsync(response.ToList(), cancellation: ct);
     }
 }
