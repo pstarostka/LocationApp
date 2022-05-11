@@ -4,6 +4,9 @@ This is a small .NET 6 Web API using minimal API approach with [Fast-Endpoints](
 
 It's a small CRUD App for geolocation using IP addresses.
 
+## Status
+![Build](https://github.com/pstarostka/LocationApp/actions/workflows/dotnet.yml/badge.svg)
+
 ## Running the application
 To run the application, you need to have a valid ApiKey from [ipstack](https://ipstack.com/)
 
