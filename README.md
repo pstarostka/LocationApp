@@ -1,6 +1,6 @@
 # LocationApp
 
-This is a small .NET 6 Web API using minimal API approach with [Fast-Endpoints](https://fast-endpoints.com/).
+This is a small .NET 6 Web API using minimal API approach with [Fast-Endpoints](https://fast-endpoints.com/) and InMemory EF Core DB.
 
 It's a small CRUD App for geolocation using IP addresses.
 
