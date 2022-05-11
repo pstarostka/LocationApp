@@ -5,6 +5,7 @@ using LocationApp.Application.Contracts.Responses;
 using LocationApp.Application.Interfaces;
 using LocationApp.Infrastructure.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using RestSharp;
 
 namespace LocationApp.Infrastructure.Services;
@@ -12,14 +13,16 @@ namespace LocationApp.Infrastructure.Services;
 internal class IpStackGeolocationService : IGeolocationService
 {
     private readonly IMapper _mapper;
-
-    private readonly string _apiKey;
     private readonly RestClient _restClient;
+    private readonly ILogger<IpStackGeolocationService> _logger;
+    private readonly string _apiKey;
 
-    public IpStackGeolocationService(IMapper mapper, RestClient restClient, IConfiguration config)
+    public IpStackGeolocationService(IMapper mapper, RestClient restClient, IConfiguration config,
+        ILogger<IpStackGeolocationService> logger)
     {
         _mapper = mapper;
         _restClient = restClient;
+        _logger = logger;
         _apiKey = config["ApiKey"] ?? throw new Exception("ApiKey is missing");
     }
 
@@ -38,7 +41,10 @@ internal class IpStackGeolocationService : IGeolocationService
                     cancellationToken: cancellationToken);
 
             if (!bulkResponse.IsSuccessful)
+            {
+                _logger.LogError(bulkResponse.ErrorMessage);
                 throw new InvalidDataException(bulkResponse.ErrorMessage);
+            }
 
             if (bulkResponse.Data is not null) return _mapper.Map<IEnumerable<GeolocationResponse>>(bulkResponse.Data);
 
@@ -46,8 +52,12 @@ internal class IpStackGeolocationService : IGeolocationService
             {
                 PropertyNameCaseInsensitive = true
             });
+
             if (content is {Success: false})
+            {
+                _logger.LogError(content.Error?.Info);
                 throw new InvalidDataException(content.Error?.Info);
+            }
 
 
             return _mapper.Map<IEnumerable<GeolocationResponse>>(bulkResponse.Data);
@@ -55,8 +65,12 @@ internal class IpStackGeolocationService : IGeolocationService
 
         var singleResponse =
             await _restClient.ExecuteAsync<GeolocationApiResponse>(request, cancellationToken: cancellationToken);
+
         if (!singleResponse.IsSuccessful)
+        {
+            _logger.LogError(singleResponse.ErrorMessage);
             throw new InvalidDataException(singleResponse.ErrorMessage);
+        }
 
         return _mapper.Map<IEnumerable<GeolocationResponse>>(new[] {singleResponse.Data});
     }
@@ -66,9 +80,16 @@ internal class IpStackGeolocationService : IGeolocationService
         var request = new RestRequest("check")
             .AddQueryParameter("access_key", _apiKey);
 
-        var singleResponse =
+        var apiResponse =
             await _restClient.ExecuteAsync<GeolocationApiResponse>(request, cancellationToken: cancellationToken);
-        return _mapper.Map<GeolocationResponse>(singleResponse.Data);
+
+        if (!apiResponse.IsSuccessful)
+        {
+            _logger.LogError(apiResponse.ErrorMessage);
+            throw new InvalidDataException(apiResponse.ErrorMessage);
+        }
+
+        return _mapper.Map<GeolocationResponse>(apiResponse.Data);
     }
 
     public Task UpdateGeolocation(UpdateGeolocationRequest request, CancellationToken cancellationToken = default)

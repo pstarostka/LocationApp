@@ -2,8 +2,17 @@ global using FastEndpoints;
 using FastEndpoints.Swagger;
 using LocationApp.Application;
 using LocationApp.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 builder.Services.AddFastEndpoints();
 builder.Services.AddEndpointsApiExplorer();

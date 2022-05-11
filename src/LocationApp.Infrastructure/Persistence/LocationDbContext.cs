@@ -3,16 +3,19 @@ using LocationApp.Application.Interfaces;
 using LocationApp.Domain.Common;
 using LocationApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace LocationApp.Infrastructure.Persistence;
 
-internal class InMemoryDbContext : DbContext
+internal class LocationDbContext : DbContext
 {
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly ILogger<LocationDbContext> _logger;
 
-    public InMemoryDbContext(IDateTimeProvider dateTimeProvider)
+    public LocationDbContext(IDateTimeProvider dateTimeProvider, ILogger<LocationDbContext> logger)
     {
         _dateTimeProvider = dateTimeProvider;
+        _logger = logger;
     }
 
     public DbSet<GeolocationEntity> Geolocations { get; set; }
@@ -37,6 +40,7 @@ internal class InMemoryDbContext : DbContext
         }
 
         var result = await base.SaveChangesAsync(cancellationToken);
+        _logger.LogInformation("Successfully saved {Count} entries", result);
         return result;
     }
 

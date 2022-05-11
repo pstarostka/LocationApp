@@ -6,6 +6,7 @@ using LocationApp.Application.Interfaces;
 using LocationApp.Domain.Entities;
 using LocationApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RestSharp;
 
 namespace LocationApp.Infrastructure.Services;
@@ -13,17 +14,19 @@ namespace LocationApp.Infrastructure.Services;
 internal class GeolocationPersistenceService : IGeolocationService
 {
     private readonly IGeolocationService _geolocationService;
-    private readonly InMemoryDbContext _dbContext;
+    private readonly LocationDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly RestClient _restClient;
+    private readonly ILogger<GeolocationPersistenceService> _logger;
 
-    public GeolocationPersistenceService(IGeolocationService geolocationService, InMemoryDbContext dbContext,
-        IMapper mapper, RestClient restClient)
+    public GeolocationPersistenceService(IGeolocationService geolocationService, LocationDbContext dbContext,
+        IMapper mapper, RestClient restClient, ILogger<GeolocationPersistenceService> logger)
     {
         _geolocationService = geolocationService;
         _dbContext = dbContext;
         _mapper = mapper;
         _restClient = restClient;
+        _logger = logger;
     }
 
 
@@ -74,7 +77,11 @@ internal class GeolocationPersistenceService : IGeolocationService
         var entity = await _dbContext.Geolocations.Where(x => x.Id == request.Id)
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
         if (entity is null)
-            throw new ApplicationException($"Entity with id '{request.Id}' was not found");
+        {
+            var errorMessage = $"Entity with id '{request.Id}' was not found";
+            _logger.LogError(errorMessage);
+            throw new ApplicationException(errorMessage);
+        }
 
         _dbContext.Entry(entity).CurrentValues.SetValues(_mapper.Map<GeolocationEntity>(request));
 
@@ -91,7 +98,11 @@ internal class GeolocationPersistenceService : IGeolocationService
         var entity = await _dbContext.Geolocations.Where(predicate)
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
         if (entity is null)
-            throw new ApplicationException($"Entity to delete was not found");
+        {
+            var errorMessage = "Entity to delete was not found";
+            _logger.LogError(errorMessage);
+            throw new ApplicationException(errorMessage);
+        }
 
         _dbContext.Geolocations.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);

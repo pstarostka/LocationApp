@@ -4,7 +4,7 @@ namespace LocationApp.Infrastructure.Persistence;
 
 internal static class InMemoryDbContextSeed
 {
-    public static void SeedData(InMemoryDbContext context)
+    public static void SeedData(LocationDbContext context)
     {
         context.Geolocations.AddRange(new List<GeolocationEntity>
         {

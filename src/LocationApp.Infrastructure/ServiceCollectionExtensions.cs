@@ -17,9 +17,9 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped<IGeolocationService, IpStackGeolocationService>();
         services.Decorate<IGeolocationService, GeolocationPersistenceService>();
-        services.AddDbContext<InMemoryDbContext>();
+        services.AddDbContext<LocationDbContext>();
 
-        var dbContext = services.BuildServiceProvider().GetRequiredService<InMemoryDbContext>();
+        var dbContext = services.BuildServiceProvider().GetRequiredService<LocationDbContext>();
         dbContext.Database.EnsureCreated();
         InMemoryDbContextSeed.SeedData(dbContext);
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
