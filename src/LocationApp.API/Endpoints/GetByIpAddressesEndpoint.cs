@@ -13,7 +13,6 @@ public class GetByIpAddressesEndpoint : Endpoint<GeolocationByIpAddressesRequest
         _geolocationService = geolocationService;
     }
 
-
     public override void Configure()
     {
         Verbs(Http.GET);

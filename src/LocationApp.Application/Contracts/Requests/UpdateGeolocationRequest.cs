@@ -16,6 +16,4 @@ public class UpdateGeolocationRequest
     public string? CountryName { get; set; }
     public string? RegionCode { get; set; }
     public string? RegionName { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? LastModifiedAt { get; set; }
 }

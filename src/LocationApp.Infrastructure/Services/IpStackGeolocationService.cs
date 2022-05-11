@@ -23,9 +23,8 @@ internal class IpStackGeolocationService : IGeolocationService
         _mapper = mapper;
         _restClient = restClient;
         _logger = logger;
-        _apiKey = config["ApiKey"] ?? throw new Exception("ApiKey is missing");
+        _apiKey = config["IpStackApiKey"] ?? throw new Exception("IpStackApiKey is missing");
     }
-
 
     public async Task<IEnumerable<GeolocationResponse>> GetByIpAddresses(ICollection<string> ipAddresses,
         CancellationToken cancellationToken = default)
