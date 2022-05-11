@@ -14,3 +14,9 @@ To add user secrets for development purposes, use below commands in API project 
 dotnet user-secrets init
 dotnet user-secrets set IpStackApiKey <your_api_key>
 ```
+
+## Sample Data
+There are a couple of data in DB. You can use these IPs to try them out:
+  
+  - 185.31.24.68
+  - 212.77.98.9

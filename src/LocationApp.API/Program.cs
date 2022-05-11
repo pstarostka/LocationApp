@@ -1,7 +1,10 @@
 global using FastEndpoints;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using FastEndpoints.Swagger;
 using LocationApp.Application;
 using LocationApp.Infrastructure;
+using Microsoft.AspNetCore.Http.Json;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +18,13 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.AddFastEndpoints();
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.WriteIndented = true;    
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDoc();
 

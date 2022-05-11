@@ -8,24 +8,40 @@ internal static class InMemoryDbContextSeed
     {
         context.Geolocations.AddRange(new List<GeolocationEntity>
         {
-            //TODO: add "real" data to save up on api calls
-            new GeolocationEntity
+            new()
             {
-                Ip = "196.168.0.1",
-                City = "Test",
+                Ip = "185.31.24.68",
+                City = "Poznań",
                 Hostname = "",
-                Latitude = 12.0,
-                Longitude = 34.0,
-                Type = "",
-                Zip = "43-100",
-                ContinentCode = "eu",
+                Latitude = 52.40496063232422,
+                Longitude = 16.839109420776367,
+                Type = "ipv4",
+                Zip = "60-166",
+                ContinentCode = "EU",
                 ContinentName = "Europe",
                 CountryCode = "PL",
                 CountryName = "Poland",
                 CreatedAt = DateTime.UtcNow,
-                RegionCode = "sl",
-                RegionName = "Slaskie"
-            }
+                RegionCode = "WP",
+                RegionName = "Greater Poland"
+            },
+            new()
+            {
+                Ip = "212.77.98.9",
+                City = "Gdańsk",
+                Hostname = "",
+                Latitude = 54.31930923461914,
+                Longitude = 18.63736915588379,
+                Type = "ipv4",
+                Zip = "80-009",
+                ContinentCode = "EU",
+                ContinentName = "Europe",
+                CountryCode = "PL",
+                CountryName = "Poland",
+                CreatedAt = DateTime.UtcNow,
+                RegionCode = "PM",
+                RegionName = "Pomerania"
+            },
         });
         context.SaveChanges();
     }

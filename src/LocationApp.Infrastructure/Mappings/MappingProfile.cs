@@ -11,7 +11,19 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<UpdateGeolocationRequest, GeolocationEntity>();
-        CreateMap<GeolocationEntity, GeolocationResponse>().ReverseMap();
-        CreateMap<GeolocationApiResponse, GeolocationResponse>();
+        CreateMap<GeolocationEntity, GeolocationResponse.GeolocationData>().ReverseMap();
+        CreateMap<GeolocationApiResponse, GeolocationResponse.GeolocationData>().ReverseMap();
+
+        CreateMap<GeolocationEntity, GeolocationResponse>()
+            .ForMember(x => x.DataSource, opt => opt.MapFrom((_) => GeolocationResponse.DataSourceEnum.Database))
+            .ForMember(src => src.Data,
+                opt => opt.MapFrom(src => src))
+            .ReverseMap();
+
+
+        CreateMap<GeolocationApiResponse, GeolocationResponse>()
+            .ForMember(x => x.DataSource, opt => opt.MapFrom((_) => GeolocationResponse.DataSourceEnum.IpStack))
+            .ForMember(src => src.Data,
+                opt => opt.MapFrom(src => src)).ReverseMap();
     }
 }

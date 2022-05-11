@@ -3,7 +3,6 @@ using AutoMapper;
 using LocationApp.Application.Contracts.Requests;
 using LocationApp.Application.Contracts.Responses;
 using LocationApp.Application.Interfaces;
-using LocationApp.Domain.Entities;
 using LocationApp.Infrastructure.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

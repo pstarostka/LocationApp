@@ -18,7 +18,7 @@ internal class LocationDbContext : DbContext
         _logger = logger;
     }
 
-    public DbSet<GeolocationEntity> Geolocations { get; set; }
+    public DbSet<GeolocationEntity> Geolocations { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseInMemoryDatabase("GeolocationDB");

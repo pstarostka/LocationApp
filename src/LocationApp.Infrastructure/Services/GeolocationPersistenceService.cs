@@ -4,6 +4,7 @@ using LocationApp.Application.Contracts.Requests;
 using LocationApp.Application.Contracts.Responses;
 using LocationApp.Application.Interfaces;
 using LocationApp.Domain.Entities;
+using LocationApp.Infrastructure.Models;
 using LocationApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -47,10 +48,25 @@ internal class GeolocationPersistenceService : IGeolocationService
             await _geolocationService.GetByIpAddresses(notFoundIpAddresses, cancellationToken);
 
         var mappedApiResponse = _mapper.Map<IEnumerable<GeolocationEntity>>(apiResponse);
+        var geolocationEntities = mappedApiResponse as GeolocationEntity[] ?? mappedApiResponse.ToArray();
 
-        await _dbContext.Geolocations.AddRangeAsync(mappedApiResponse, cancellationToken);
+        UpdateIds(apiResponse, geolocationEntities);
+
+        await _dbContext.Geolocations.AddRangeAsync(geolocationEntities, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return mappedEntities.Concat(_mapper.Map<IEnumerable<GeolocationResponse>>(mappedApiResponse));
+
+
+        return mappedEntities.Concat(_mapper.Map<IEnumerable<GeolocationResponse>>(apiResponse));
+    }
+
+    private void UpdateIds(IEnumerable<GeolocationResponse> dtos, IEnumerable<GeolocationEntity> entities)
+    {
+        foreach (var entity in entities)
+        {
+            var dto = dtos.FirstOrDefault(x => x.Data.Ip == entity.Ip);
+            if (dto is not null)
+                dto.Data.Id = entity.Id;
+        }
     }
 
     public async Task<GeolocationResponse> GetByCurrentIpAddress(CancellationToken cancellationToken = default)
@@ -69,7 +85,9 @@ internal class GeolocationPersistenceService : IGeolocationService
         await _dbContext.Geolocations.AddAsync(mappedApiResponse, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<GeolocationResponse>(mappedApiResponse);
+        response.Data.Id = mappedApiResponse.Id;
+
+        return response;
     }
 
     public async Task UpdateGeolocation(UpdateGeolocationRequest request, CancellationToken cancellationToken = default)

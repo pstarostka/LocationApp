@@ -2,5 +2,5 @@
 
 public class GeolocationByIpAddressesRequest
 {
-    public string IpAddresses { get; set; }
+    public string IpAddresses { get; set; } = "";
 }

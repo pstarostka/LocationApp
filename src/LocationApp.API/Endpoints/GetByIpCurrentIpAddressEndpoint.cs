@@ -1,4 +1,3 @@
-using LocationApp.Application.Contracts.Requests;
 using LocationApp.Application.Contracts.Responses;
 using LocationApp.Application.Interfaces;
 
